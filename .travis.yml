@@ -1,0 +1,21 @@
+env:
+  DOCKER_COMPOSE_VERSION: 1.13.0
+
+language:
+  python
+  
+sudo: required
+
+services:
+  - docker
+
+install:
+  - sudo apt-get install -o Dpkg::Options::="--force-confold" --force-yes -y docker-engine
+  - pip install --upgrade pip
+  - pip install -r requirements.txt
+  - docker-compose --version
+  - python setup_server.py
+
+script:
+  - docker-compose pull
+  - docker-compose build
