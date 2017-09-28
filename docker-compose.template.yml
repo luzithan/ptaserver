@@ -14,12 +14,11 @@ services:
       - "32412:32412/udp"
       - "32413:32413/udp"
       - "32414:32414/udp"
-    hostname: plex
+    hostname: plex_server
     environment:
       - TZ=${TZ}
       - PLEX_CLAIM=${PLEX_CLAIM}
       - ADVERTISE_IP=${ADVERTISE_IP}
-    hostname: <hostname>
     volumes:
       - /share/Multimedia/Configurations/Plex:/config
       - /tmp:/transcode
@@ -47,3 +46,13 @@ services:
     ports:
       - "9091:9091"
       - "51413:51413"
+  peerflix:
+    container_name: peerflix
+    image: asapach/peerflix-server
+    restart: unless-stopped
+    ports:
+      - "6881:6881/tcp"
+      - "9000:9000/tcp"
+    hostname: peerflix
+    volumes:
+      - /tmp:/tmp/torrent-stream
