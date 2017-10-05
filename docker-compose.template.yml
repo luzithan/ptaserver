@@ -45,14 +45,9 @@ services:
       - GROUPID=0
     ports:
       - "9091:9091"
-      - "51413:51413"
-  peerflix:
-    container_name: peerflix
-    image: asapach/peerflix-server
-    restart: unless-stopped
-    ports:
-      - "6881:6881/tcp"
-      - "9000:9000/tcp"
-    hostname: peerflix
+      - "51412:51413"
+  torrent-live:
+    build: torrent-live
     volumes:
-      - /tmp:/tmp/torrent-stream
+      - /share/TVShows:/tv
+      - /share/Movier:/movies
