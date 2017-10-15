@@ -1,0 +1,3 @@
+[submodule "torrent-mount"]
+	path = torrent-mount
+	url = git@github.com:luzithan/torrent-mount.git
