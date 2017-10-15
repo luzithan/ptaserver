@@ -1,7 +1,3 @@
 Flask
-tvdb-api==1.9
-tvnamer==2.3
-omdb
 python-dotenv
-pyswagger
-flask-envconfig
+parse-torrent-name

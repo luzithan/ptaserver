@@ -1,30 +1,16 @@
+import json
+import os
 import re
 from collections import namedtuple
 
-import os
+import PTN
 import tvnamer
 import tvnamer.config
 from dotenv import load_dotenv, find_dotenv
-from flask import Flask, request, current_app
-from flask_envconfig import EnvConfig
+from flask import Flask, request, Response
 from tvdb_exceptions import *
 from tvnamer.tvnamer_exceptions import DataRetrievalError, UserAbort, InvalidFilename
 from tvnamer.utils import FileParser, DatedEpisodeInfo, AnimeEpisodeInfo
-
-from omdbservice import OmdbService
-from tvdbservice import TvdbService
-
-
-tvnamer.config.Config['select_first'] = False
-tvnamer.config.Config['titlecase_filename'] = True
-tvnamer.config.Config['search_all_languages'] = False
-tvnamer.config.Config['verbose'] = True
-# showname Season 01 Episode 20
-tvnamer.config.Config['filename_patterns'].insert(0,
-                                                  '''^(?P<seriesname>.+?)[ ]?
-                              [Ss]eason[ ]?(?P<seasonnumber>[0-9]+)[ ]?
-                              [Ee]pisode[ ]?(?P<episodenumberstart>\d+)[ &]+(?P<episodenumberend>\d+)
-                              [^\\/]*$''')
 
 fileparser = FileParser('')
 resplit = re.compile('[ \._\-\+\(\)\}\{\[\]]')
@@ -215,48 +201,18 @@ except ImportError:
     from flask import _request_ctx_stack as stack
 
 
-class Parser(object):
-    def __init__(self, app=None):
-        self.app = app
-        if app is not None:
-            self.init_app(app)
-
-    def init_app(self, app):
-
-        # Use the newstyle teardown_appcontext if it's available,
-        # otherwise fall back to the request context
-        if hasattr(app, 'teardown_appcontext'):
-            app.teardown_appcontext(self.teardown)
-        else:
-            app.teardown_request(self.teardown)
-
-    def teardown(self, exception):
-        ctx = stack.top
-
-    @property
-    def service(self):
-        ctx = stack.top
-        if ctx is not None:
-            if not hasattr(ctx, 'parser_service'):
-                tvdb = TvdbService()
-                omdb = OmdbService()
-                ctx.parser_service = ParserService(tvdb, omdb)
-            return ctx.parser_service
-
-
-parser = Parser()
-envconfig = EnvConfig()
 load_dotenv(find_dotenv())
+
 
 def create_app():
     app = Flask("TV shows file names parser")
-    envconfig.init_app(app)
-    parser.init_app(app)
 
     @app.route('/', methods=['GET'])
     def root_parser():
-        return parser.service.parse(request.data)
+        result = PTN.parse(request.data)
+        return Response(json.dumps(result), mimetype='text/json')
     return app
+
 
 if __name__ == '__main__':
     app = create_app()
