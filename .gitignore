@@ -3,4 +3,5 @@ venv/
 .env
 docker-compose.yml
 *.pyc
+node_modules/
 
