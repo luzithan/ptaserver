@@ -28,8 +28,8 @@ services:
   plex_setup:
     build: plex-setup
     environment:
-      - PLEX_USERNAME = ${PLEX_USERNAME}
-      - PLEX_PASSWORD = ${PLEX_PASSWORD}
+      - PLEX_SERVER_HOSTNAME=http://plex
+      - PLEX_AUTH=${PLEX_AUTH}
     depends_on:
       plex:
         condition: service_healthy

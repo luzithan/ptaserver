@@ -1,26 +1,9 @@
-FROM node
+FROM python:3.6
 
 COPY . /app
 
 WORKDIR /app
 
-CMD ['node','indexjs']
+RUN pip install -r requirements.txt
 
-
-FROM node:boron
-
-# Create app directory
-WORKDIR /app
-
-# Install app dependencies
-COPY package.json .
-COPY package.json package-lock.json ./
-
-RUN npm install
-
-# Bundle app source
-COPY . .
-ENV PLEX_USERNAME
-ENV PLEX_PASSWORD
-
-CMD [ "npm", "start" ]
+CMD ['python','./script.py']

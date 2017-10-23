@@ -19,7 +19,8 @@ if password is None:
     print('Error we need a PLEX_PASSWORD environement variable')
     exit(-1)
 
-claim_token = getClaimToken(getAuthToken(user,password))
+auth_token = getAuthToken(user,password)
+claim_token = getClaimToken(auth_token)
 
 from tzlocal import get_localzone
 from datetime import datetime
@@ -41,6 +42,7 @@ with open('docker-compose.template.yml', 'r') as template_file:
     env['TZ'] = str(local_tz)
     env['ADVERTISE_IP'] = advertise_ip
     env['PLEX_CLAIM'] = claim_token
+    env['PLEX_AUTH'] = auth_token
     env['PWD'] = os.path.dirname(__file__)
     treated = template.substitute(env)
     with open('docker-compose.yml', 'w') as yml_file:
