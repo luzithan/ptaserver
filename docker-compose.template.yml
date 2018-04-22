@@ -31,8 +31,6 @@ services:
     volumes:
       - dl-data-movies:/movies
       - dl-data-tv:/tv
-    networks:
-      - proxy
  # plex-setup:
   #  build: plex-setup
    # environment:
@@ -63,8 +61,6 @@ services:
       - "51411:51411"
     expose:
       - "9091"
-    networks:
-      - proxy
   transmission-tv:
     image: dperson/transmission
     expose:
