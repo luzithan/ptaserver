@@ -98,7 +98,7 @@ services:
       - dl-data-tv:/var/www/tv
       - dl-data-movies:/var/www/movies
     ports:
-      - "8080:80"
+      - "8080:8080"
   emby:
     image: emby/embyserver
     volumes:
@@ -106,7 +106,8 @@ services:
       - dl-data-tv:/mnt/shareTV
       - dl-data-movies:/mnt/shareMovies
     ports:
-      - 8920:8920
+      - "8920:8920"
+      - "8096:8096"
 
 
 volumes:
