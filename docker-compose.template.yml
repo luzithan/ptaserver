@@ -29,17 +29,9 @@ services:
     volumes:
       - /share/Multimedia/Configurations/Plex:/config
       - /tmp:/transcode
-      - /share/Download:/data
       - dl-data-movies:/movies
       - dl-data-tv:/tv
- # plex-setup:
-  #  build: plex-setup
-   # environment:
-    #  - PLEX_SERVER_HOSTNAME=http://plex
-     # - PLEX_AUTH=${PLEX_AUTH}
-    #depends_on:
-     # plex:
-      #  condition: service_healthy
+      - data:/data
   transmission-movies:
     image: dperson/transmission
     expose:
@@ -84,6 +76,28 @@ services:
       - "51412:51412"
     expose:
       - "9092"
+  transmission-data:
+    image: dperson/transmission
+    expose:
+      - 9093
+    volumes:
+      - data:/downloads
+    environment:
+      - TR_RPC_AUTHENTICATION_REQUIRED=true
+      - TR_DOWNLOAD_DIR=/downloads
+      - TR_RPC_ENABLED=true
+      - TR_PEER_PORT=51413
+      - TRUSER=${TRANSMISSION_USERNAME}
+      - TRPASSWD=${TRANSMISSION_PASSWORD}
+      - USERID=0
+      - GROUPID=0
+      - VIRTUAL_HOST=transmission-data.${DOMAIN}
+      - VIRTUAL_PORT=9091
+    ports:
+      - "9093:9091"
+      - "51413:51413"
+    expose:
+      - "9093"
   parser:
     build: parser
     hostname: parser
