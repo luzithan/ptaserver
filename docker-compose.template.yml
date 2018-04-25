@@ -29,15 +29,15 @@ services:
     volumes:
       - /share/Multimedia/Configurations/Plex:/config
       - /tmp:/transcode
-      - dl-data-movies:/movies
-      - dl-data-tv:/tv
-      - data:/data
+      - ${dl-data-movies}:/movies
+      - ${dl-data-tv}:/tv
+      - /share/Data:/data
   transmission-movies:
     image: dperson/transmission
     expose:
       - 9091
     volumes:
-      - dl-data-movies:/downloads
+      - ${dl-data-movies}:/downloads
     environment:
       - TR_RPC_AUTHENTICATION_REQUIRED=true
       - TR_DOWNLOAD_DIR=/downloads
@@ -59,7 +59,7 @@ services:
     expose:
       - 9092
     volumes:
-      - dl-data-tv:/downloads
+      - ${dl-data-tv}:/downloads
     environment:
       - TR_RPC_AUTHENTICATION_REQUIRED=true
       - TR_DOWNLOAD_DIR=/downloads
@@ -81,12 +81,14 @@ services:
     expose:
       - 9093
     volumes:
-      - data:/downloads
+      - /share/Data:/downloads
     environment:
       - TR_RPC_AUTHENTICATION_REQUIRED=true
       - TR_DOWNLOAD_DIR=/downloads
       - TR_RPC_ENABLED=true
       - TR_PEER_PORT=51413
+      - TR_INCOMPLETE_DIR_ENABLED=true
+      - TR_INCOMPLETE_DIR=/downloads/_incomplete
       - TRUSER=${TRANSMISSION_USERNAME}
       - TRPASSWD=${TRANSMISSION_PASSWORD}
       - USERID=0
@@ -110,16 +112,16 @@ services:
   dl-serve:
     image: kyma/docker-nginx
     volumes:
-      - dl-data-tv:/var/www/tv
-      - dl-data-movies:/var/www/movies
+      - ${dl-data-tv}:/var/www/tv
+      - ${dl-data-movies}:/var/www/movies
     ports:
       - "8082:80"
   emby:
     image: emby/embyserver
     volumes:
       - /share/Multimedia/Configurations/Emby:/config
-      - dl-data-tv:/mnt/shareTV
-      - dl-data-movies:/mnt/shareMovies
+      - ${dl-data-tv}:/mnt/shareTV
+      - ${dl-data-movies}:/mnt/shareMovies
     ports:
       - "8920:8920"
       - "8096:8096"
@@ -133,7 +135,7 @@ services:
     cap_add:
       - sys_admin
     volumes:
-      - data:/data
+      - /share/Data:/data
       - /share/Multimedia/Configurations/rc-mount:/config
     environment:
       - RCLONE_REMOTE_MOUNT=remote:${B2_BUCKET}
@@ -145,23 +147,3 @@ services:
       - MOUNT_GID=1000
       - PUID=0
       - PGID=0
-
-volumes:
-  dl-data-movies:
-    driver: local
-    driver_opts:
-      type: none
-      device: /share/Movies
-      o: bind
-  dl-data-tv:
-    driver: local
-    driver_opts:
-      type: none
-      device: /share/TV
-      o: bind
-  data:
-    driver: local
-    driver_opts:
-      type: none
-      device: /share/Data
-      o: bind
