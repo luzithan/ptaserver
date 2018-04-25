@@ -45,8 +45,8 @@ with open('docker-compose.template.yml', 'r') as template_file:
     env['PLEX_CLAIM'] = claim_token
     env['PLEX_AUTH'] = auth_token
     env['PWD'] = os.path.dirname(__file__)
-    env['dl-data-movies'] = '/share/Movies'
-    env['dl-data-tv'] = '/share/TV'
+    env['dl_data_movies'] = '/share/Movies'
+    env['dl_data_tv'] = '/share/TV'
     treated = template.substitute(env)
     with open('docker-compose.yml', 'w') as yml_file:
         yml_file.write(treated)

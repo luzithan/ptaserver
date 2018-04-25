@@ -29,15 +29,15 @@ services:
     volumes:
       - /share/Multimedia/Configurations/Plex:/config
       - /tmp:/transcode
-      - ${dl-data-movies}:/movies
-      - ${dl-data-tv}:/tv
+      - ${dl_data_movies}:/movies
+      - ${dl_data_tv}:/tv
       - /share/Data:/data
   transmission-movies:
     image: dperson/transmission
     expose:
       - 9091
     volumes:
-      - ${dl-data-movies}:/downloads
+      - ${dl_data_movies}:/downloads
     environment:
       - TR_RPC_AUTHENTICATION_REQUIRED=true
       - TR_DOWNLOAD_DIR=/downloads
@@ -59,7 +59,7 @@ services:
     expose:
       - 9092
     volumes:
-      - ${dl-data-tv}:/downloads
+      - ${dl_data_tv}:/downloads
     environment:
       - TR_RPC_AUTHENTICATION_REQUIRED=true
       - TR_DOWNLOAD_DIR=/downloads
@@ -112,16 +112,16 @@ services:
   dl-serve:
     image: kyma/docker-nginx
     volumes:
-      - ${dl-data-tv}:/var/www/tv
-      - ${dl-data-movies}:/var/www/movies
+      - ${dl_data_tv}:/var/www/tv
+      - ${dl_data_movies}:/var/www/movies
     ports:
       - "8082:80"
   emby:
     image: emby/embyserver
     volumes:
       - /share/Multimedia/Configurations/Emby:/config
-      - ${dl-data-tv}:/mnt/shareTV
-      - ${dl-data-movies}:/mnt/shareMovies
+      - ${dl_data_tv}:/mnt/shareTV
+      - ${dl_data_movies}:/mnt/shareMovies
     ports:
       - "8920:8920"
       - "8096:8096"
