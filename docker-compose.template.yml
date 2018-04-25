@@ -24,11 +24,12 @@ services:
       - ADVERTISE_IP=${ADVERTISE_IP}
       - VIRTUAL_HOST=plex.${DOMAIN}
       - VIRTUAL_PORT=32400
+      - PLEX_UID=0
+      - PLEX_GID=0
     volumes:
       - /share/Multimedia/Configurations/Plex:/config
       - /tmp:/transcode
       - /share/Download:/data
-    volumes:
       - dl-data-movies:/movies
       - dl-data-tv:/tv
  # plex-setup:
@@ -98,7 +99,7 @@ services:
       - dl-data-tv:/var/www/tv
       - dl-data-movies:/var/www/movies
     ports:
-      - "8080:8080"
+      - "8080:80"
   emby:
     image: emby/embyserver
     volumes:
@@ -109,6 +110,27 @@ services:
       - "8920:8920"
       - "8096:8096"
 
+  rc-mount:
+    image: tynor88/rclone-mount:dev
+    security_opt:
+      - apparmor:unconfine
+    devices:
+      - /dev/fuse
+    cap_add:
+      - sys_admin
+    volumes:
+      - data:/data
+      - /share/Multimedia/Configurations/rc-mount:/config
+    environment:
+      - RCLONE_REMOTE_MOUNT=remote:${B2_BUCKET}
+      - RCLONE_MOUNT_OPTIONS=--stats 1s --buffer-size 1G --timeout 5s --contimeout 5s -v
+      - RCLONE_CONFIG_REMOTE_TYPE=b2
+      - RCLONE_CONFIG_REMOTE_ACCOUNT=${B2_ACCOUNT}
+      - RCLONE_CONFIG_REMOTE_KEY=${B2_KEY}
+      - MOUNT_UID=1000
+      - MOUNT_GID=1000
+      - PUID=0
+      - PGID=0
 
 volumes:
   dl-data-movies:
@@ -122,4 +144,10 @@ volumes:
     driver_opts:
       type: none
       device: /share/TV
+      o: bind
+  data:
+    driver: local
+    driver_opts:
+      type: none
+      device: /share/Data
       o: bind
