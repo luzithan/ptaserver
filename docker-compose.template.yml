@@ -99,7 +99,7 @@ services:
       - dl-data-tv:/var/www/tv
       - dl-data-movies:/var/www/movies
     ports:
-      - "8080:80"
+      - "8082:80"
   emby:
     image: emby/embyserver
     volumes:
