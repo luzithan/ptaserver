@@ -82,6 +82,8 @@ services:
       - 9093
     volumes:
       - /share/Data:/downloads
+    depends_on:
+      - rc-mount
     environment:
       - TR_RPC_AUTHENTICATION_REQUIRED=true
       - TR_DOWNLOAD_DIR=/downloads
