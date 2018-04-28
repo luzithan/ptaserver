@@ -1,4 +1,0 @@
-python-dotenv
-requests
-tzlocal
-docker-compose==1.13.0
