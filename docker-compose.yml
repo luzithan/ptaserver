@@ -48,6 +48,7 @@ services:
       - /share/Data:/data:shared
     depends_on:
       - build-plex
+      - rc-mount
   transmission-movies:
     image: dperson/transmission
     expose:
@@ -119,6 +120,8 @@ services:
       - "51413:51413"
     expose:
       - "9093"
+    depends_on:
+      - rc-mount
   parser:
     build: parser
     hostname: parser
