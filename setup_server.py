@@ -48,5 +48,5 @@ with open('docker-compose.template.yml', 'r') as template_file:
     env['dl_data_movies'] = '/share/Movies'
     env['dl_data_tv'] = '/share/TV'
     treated = template.substitute(env)
-    with open('docker-compose.yml', 'w') as yml_file:
+    with open('docker-compose.generated.yml', 'w') as yml_file:
         yml_file.write(treated)
