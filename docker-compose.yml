@@ -1,19 +1,16 @@
-version: '3'
+version: '3.4'
+x-base: &base
+  env_file:
+    - .env
+
+x-fuse-base: &fuse-base
+  security_opt:
+    - apparmor:unconfine
+  devices:
+    - /dev/fuse
+  cap_add:
+    - sys_admin
 services:
-  base: &base
-    image: rwgrim/docker-noop
-    env_file:
-      - .env
-
-  fuse-base: &fuse-base
-    image: rwgrim/docker-noop
-    security_opt:
-      - apparmor:unconfine
-    devices:
-      - /dev/fuse
-    cap_add:
-      - sys_admin
-
   build-plex:
     build: build-plex
     <<: *base
