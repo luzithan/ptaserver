@@ -1,0 +1,171 @@
+version: '3'
+services:
+  base: &base
+    image: rwgrim/docker-noop
+    env_file:
+      - .env
+
+  fuse-base: &fuse-base
+    image: rwgrim/docker-noop
+    security_opt:
+      - apparmor:unconfine
+    devices:
+      - /dev/fuse
+    cap_add:
+      - sys_admin
+
+  build-plex:
+    build: build-plex
+    <<: *base
+    volumes:
+      - /share/Multimedia/Configurations/Plex:/config
+
+  plex:
+    container_name: plex
+    image: plexinc/pms-docker:latest
+    restart: unless-stopped
+    expose:
+      - "32400"
+    ports:
+      - "32400:32400/tcp"
+      - "3005:3005/tcp"
+      - "8324:8324/tcp"
+      - "32469:32469/tcp"
+#      - "80:80/tcp"
+      #- "1900:1900/udp"
+      - "32410:32410/udp"
+      - "32412:32412/udp"
+      - "32413:32413/udp"
+      - "32414:32414/udp"
+    hostname: plex_server
+    environment:
+      - TZ=${TZ}
+      - PLEX_CLAIM=${PLEX_CLAIM}
+      - ADVERTISE_IP=${ADVERTISE_IP}
+      - VIRTUAL_HOST=plex.${DOMAIN}
+      - VIRTUAL_PORT=32400
+      - PLEX_UID=0
+      - PLEX_GID=0
+    volumes:
+      - /share/Multimedia/Configurations/Plex:/config
+      - /tmp:/transcode
+      - /share/Movies:/movies
+      - /share/TV:/tv
+      - /share/Data:/data
+    depends_on:
+      - build-plex
+  transmission-movies:
+    image: dperson/transmission
+    expose:
+      - 9091
+    volumes:
+      - /share/Movies:/downloads
+    environment:
+      - TR_RPC_AUTHENTICATION_REQUIRED=true
+      - TR_DOWNLOAD_DIR=/downloads
+      - TR_RPC_ENABLED=true
+      - TR_PEER_PORT=51411
+      - TRUSER=${TRANSMISSION_USERNAME}
+      - TRPASSWD=${TRANSMISSION_PASSWORD}
+      - USERID=0
+      - GROUPID=0
+      - VIRTUAL_HOST=transmission-movies.${DOMAIN}
+      - VIRTUAL_PORT=9091
+    ports:
+      - "9091:9091"
+      - "51411:51411"
+    expose:
+      - "9091"
+  transmission-tv:
+    image: dperson/transmission
+    expose:
+      - 9092
+    volumes:
+      - /share/TV:/downloads
+    environment:
+      - TR_RPC_AUTHENTICATION_REQUIRED=true
+      - TR_DOWNLOAD_DIR=/downloads
+      - TR_RPC_ENABLED=true
+      - TR_PEER_PORT=51412
+      - TRUSER=${TRANSMISSION_USERNAME}
+      - TRPASSWD=${TRANSMISSION_PASSWORD}
+      - USERID=0
+      - GROUPID=0
+      - VIRTUAL_HOST=transmission-tv.${DOMAIN}
+      - VIRTUAL_PORT=9092
+    ports:
+      - "9092:9091"
+      - "51412:51412"
+    expose:
+      - "9092"
+  transmission-data:
+    image: dperson/transmission
+    expose:
+      - 9093
+    volumes:
+      - /share/Data:/downloads
+    <<: *fuse-base
+    depends_on:
+      - rc-mount
+    environment:
+      - TR_RPC_AUTHENTICATION_REQUIRED=true
+      - TR_DOWNLOAD_DIR=/downloads
+      - TR_RPC_ENABLED=true
+      - TR_PEER_PORT=51413
+      - TR_INCOMPLETE_DIR_ENABLED=true
+      - TR_INCOMPLETE_DIR=/downloads/_incomplete
+      - TRUSER=${TRANSMISSION_USERNAME}
+      - TRPASSWD=${TRANSMISSION_PASSWORD}
+      - USERID=0
+      - GROUPID=0
+      - VIRTUAL_HOST=transmission-data.${DOMAIN}
+      - VIRTUAL_PORT=9091
+    ports:
+      - "9093:9091"
+      - "51413:51413"
+    expose:
+      - "9093"
+  parser:
+    build: parser
+    hostname: parser
+    environment:
+      - PARSER_PORT=8081
+    ports:
+      - "8081:8081"
+    expose:
+      - "8081"
+
+  dl-serve:
+    image: kyma/docker-nginx
+    volumes:
+      - /share/TV:/var/www/tv
+      - /share/Movies:/var/www/movies
+    ports:
+      - "8082:80"
+
+  emby:
+    image: emby/embyserver
+    volumes:
+      - /share/Multimedia/Configurations/Emby:/config
+      - /share/TV:/mnt/shareTV
+      - /share/Movies:/mnt/shareMovies
+    ports:
+      - "8920:8920"
+      - "8096:8096"
+
+  rc-mount:
+    image: tynor88/rclone-mount:dev
+    <<: *fuse-base
+    volumes:
+      - /share/Data:/data
+      - /share/Multimedia/Configurations/rc-mount:/config
+    environment:
+      - RCLONE_REMOTE_MOUNT=remote:${B2_BUCKET}
+      - RCLONE_MOUNT_OPTIONS=--buffer-size 1G --timeout 5s --contimeout 5s --cache-total-chunk-size 2G -v
+      - RCLONE_CONFIG_REMOTE_TYPE=b2
+      - RCLONE_CONFIG_REMOTE_ACCOUNT=${B2_ACCOUNT}
+      - RCLONE_CONFIG_REMOTE_KEY=${B2_KEY}
+      - MOUNT_UID=1000
+      - MOUNT_GID=1000
+      - PUID=0
+      - PGID=0
