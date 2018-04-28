@@ -45,7 +45,7 @@ services:
       - /tmp:/transcode
       - /share/Movies:/movies
       - /share/TV:/tv
-      - /share/Data:/data
+      - /share/Data:/data:shared
     depends_on:
       - build-plex
   transmission-movies:
@@ -97,7 +97,7 @@ services:
     expose:
       - 9093
     volumes:
-      - /share/Data:/downloads
+      - /share/Data:/downloads:shared
     <<: *fuse-base
     depends_on:
       - rc-mount
@@ -151,7 +151,7 @@ services:
     image: tynor88/rclone-mount:dev
     <<: *fuse-base
     volumes:
-      - /share/Data:/data
+      - /share/Data:/data:shared
       - /share/Multimedia/Configurations/rc-mount:/config
     environment:
       - RCLONE_REMOTE_MOUNT=remote:${B2_BUCKET}
