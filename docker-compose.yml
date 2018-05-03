@@ -1,7 +1,4 @@
 version: '3.4'
-x-base: &base
-  env_file:
-    - .env
 
 x-fuse-base: &fuse-base
   security_opt:
@@ -10,10 +7,12 @@ x-fuse-base: &fuse-base
     - /dev/fuse
   cap_add:
     - sys_admin
+
 services:
   build-plex:
     build: build-plex
-    <<: *base
+    env_file:
+    - .env
     volumes:
       - /share/Multimedia/Configurations/Plex:/config
 
@@ -158,7 +157,7 @@ services:
       - /share/Multimedia/Configurations/rc-mount:/config
     environment:
       - RCLONE_REMOTE_MOUNT=remote:${B2_BUCKET}
-      - RCLONE_MOUNT_OPTIONS=--buffer-size 1G --timeout 5s --contimeout 5s --cache-total-chunk-size 2G -v
+      - RCLONE_MOUNT_OPTIONS=--buffer-size 1G --timeout 5s --contimeout 5s --cache-total-chunk-size 2G -v --vfs-cache-mode writes
       - RCLONE_CONFIG_REMOTE_TYPE=b2
       - RCLONE_CONFIG_REMOTE_ACCOUNT=${B2_ACCOUNT}
       - RCLONE_CONFIG_REMOTE_KEY=${B2_KEY}
