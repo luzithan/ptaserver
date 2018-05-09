@@ -1,12 +1,4 @@
-version: '3.4'
-
-x-fuse-base: &fuse-base
-  security_opt:
-    - apparmor:unconfine
-  devices:
-    - /dev/fuse
-  cap_add:
-    - sys_admin
+version: '3'
 
 services:
   build-plex:
@@ -98,7 +90,8 @@ services:
       - 9093
     volumes:
       - /share/Data:/downloads:shared
-    <<: *fuse-base
+    devices:
+      - /dev/fuse
     depends_on:
       - rc-mount
     environment:
@@ -151,7 +144,12 @@ services:
 
   rc-mount:
     image: tynor88/rclone-mount:dev
-    <<: *fuse-base
+    security_opt:
+      - apparmor:unconfine
+    devices:
+      - /dev/fuse
+    cap_add:
+      - sys_admin
     volumes:
       - /share/Data:/data:shared
       - /share/Multimedia/Configurations/rc-mount:/config
