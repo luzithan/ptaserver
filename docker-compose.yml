@@ -8,6 +8,13 @@ services:
     volumes:
       - /share/Multimedia/Configurations/Plex:/config
 
+  nginx-proxy:
+    image: jwilder/nginx-proxy
+    ports:
+      - "80:80"
+    volumes:
+      - /var/run/docker.sock:/tmp/docker.sock:ro
+
   plex:
     container_name: plex
     image: plexinc/pms-docker:latest
@@ -50,8 +57,11 @@ services:
       - CORE_PROCESS=1
       - CORE_API_PORT=8085
       - CORE_BASE_PATH=/home/tribler/tribler
+      - VIRTUAL_HOST=tribler.${DOMAIN}
+      - VIRTUAL_PORT=8085
     ports:
       - "8085:8085"
+    network_mode: "host"
   transmission-movies:
     image: dperson/transmission
     expose:
@@ -138,9 +148,17 @@ services:
 
   dl-serve:
     image: kyma/docker-nginx
+    environment:
+      - VIRTUAL_HOST=dl-serve.${DOMAIN}
+      - VIRTUAL_PORT=9091
     volumes:
       - /share/TV:/var/www/tv
       - /share/Movies:/var/www/movies
+      - /share/Data:/var/www/data
+    devices:
+      - /dev/fuse
+    depends_on:
+      - rc-mount
     ports:
       - "8082:80"
 
