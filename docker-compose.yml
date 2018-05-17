@@ -33,6 +33,8 @@ services:
       - "32413:32413/udp"
       - "32414:32414/udp"
     hostname: plex_server
+    env_file:
+      - /share/Multimedia/Configurations/Plex/plex.env
     environment:
       - VIRTUAL_HOST=plex.${DOMAIN}
       - VIRTUAL_PORT=32400
@@ -47,6 +49,7 @@ services:
     depends_on:
       - build-plex
       - rc-mount
+
   tribler:
     build: tribler
     expose:
