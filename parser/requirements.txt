@@ -1,3 +1,4 @@
 Flask
 python-dotenv
 parse-torrent-name
+tvnamer

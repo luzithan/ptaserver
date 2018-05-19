@@ -1,8 +1,6 @@
 import json
 import unittest
 
-from dotenv import find_dotenv, load_dotenv
-
 from app import create_app
 
 data = (
@@ -17,14 +15,12 @@ data = (
                                                                     'title': 'Game of Thrones'}),
 )
 
+@pytest.
+def setUp(self):
+    self.app = create_app().test_client()
 
-class ParseTorrentNameTestCase(unittest.TestCase):
-    def setUp(self):
-        load_dotenv(find_dotenv())
-        self.app = create_app().test_client()
-
-    def test_parse(self):
-        rv = self.app.get('/', data=data[0][0])
-        self.assertEquals(200, rv.status_code)
-        result = json.loads(rv.data)
-        self.assertEquals(data[0][1], result)
+def test_parse(app):
+    rv = self.app.get('/', data=data[0][0])
+    self.assertEquals(200, rv.status_code)
+    result = json.loads(rv.data)
+    self.assertEquals(data[0][1], result)
