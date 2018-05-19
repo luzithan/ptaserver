@@ -49,22 +49,21 @@ services:
     depends_on:
       - build-plex
       - rc-mount
-
-  tribler:
-    build: tribler
-    expose:
-      - 8085
-    volumes:
-      - /share/Downloads:/home/tribler/TriblerDownloads
-    environment:
-      - CORE_PROCESS=1
-      - CORE_API_PORT=8085
-      - CORE_BASE_PATH=/home/tribler/tribler
-      - VIRTUAL_HOST=tribler.${DOMAIN}
-      - VIRTUAL_PORT=8085
-    ports:
-      - "8085:8085"
-    network_mode: "host"
+#  tribler:
+#    build: tribler
+#    expose:
+#      - 8085
+#    volumes:
+#      - /share/Downloads:/home/tribler/TriblerDownloads
+#    environment:
+#      - CORE_PROCESS=1
+#      - CORE_API_PORT=8085
+#     - CORE_BASE_PATH=/home/tribler/tribler
+#     - VIRTUAL_HOST=tribler.${DOMAIN}
+#     - VIRTUAL_PORT=8085
+#   ports:
+#     - "8085:8085"
+#   network_mode: "host"
   transmission-movies:
     image: dperson/transmission
     expose:
