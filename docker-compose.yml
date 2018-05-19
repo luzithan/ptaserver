@@ -148,7 +148,18 @@ services:
       - "8081:8081"
     expose:
       - "8081"
-
+  jackett:
+    image: linuxserver/jackett
+    environment:
+      - PUID=0
+      - PGID=0
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - /share/Multimedia/Configurations/Jackett:/config
+    expose:
+      - "9117"
+    ports:
+      - "9117:9117"
   dl-serve:
     image: kyma/docker-nginx
     environment:
