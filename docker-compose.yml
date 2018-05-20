@@ -3,6 +3,7 @@ version: '3'
 services:
   build-plex:
     build: build-plex
+    image: luzithan/build-plex
     env_file:
     - .env
     volumes:
