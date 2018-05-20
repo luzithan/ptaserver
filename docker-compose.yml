@@ -158,6 +158,21 @@ services:
     ports:
       - "9117:9117"
 
+  couchpotato:
+    image: linuxserver/couchpotato
+    hostname: couchpotato
+    environment:
+      - PUID=${UID}
+      - PGID=${GID}
+      - TZ=${TZ}
+      - /share/Multimedia/Configurations/CouchPotato:/config
+      - /share/MoviesDownloads:/downloads
+      - /share/Movies:/movies
+    expose:
+      - 5050
+    ports:
+      - "5050:5050"
+
   sonarr:
     image: linuxserver/sonarr
     hostname: sonarr
