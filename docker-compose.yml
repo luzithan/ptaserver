@@ -166,8 +166,7 @@ services:
       - PGID=${GID}
       - TZ=${TZ}
       - /share/Multimedia/Configurations/CouchPotato:/config
-      - /share/MoviesDownloads:/downloads
-      - /share/Movies:/movies
+      - /share/Movies:/downloads
     expose:
       - 5050
     ports:
@@ -189,8 +188,7 @@ services:
     volumes:
       - /etc/localtime:/etc/localtime:ro
       - /share/Multimedia/Configurations/Sonarr:/config
-      - /share/TV:/tv
-      - /share/TVDownloads:/downloads
+      - /share/TV:/downloads
 
   dl-serve:
     image: kyma/docker-nginx
