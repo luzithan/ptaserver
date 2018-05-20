@@ -177,6 +177,8 @@ services:
       - /share/Multimedia/Configurations/CouchPotato:/config
       - /share/Movies:/downloads
       - /share/MoviesWatchDir:/watchdir
+      - VIRTUAL_HOST=couchpotato.${DOMAIN}
+      - VIRTUAL_PORT=5050
     expose:
       - 5050
     ports:
