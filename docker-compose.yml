@@ -71,11 +71,14 @@ services:
       - 9091
     volumes:
       - /share/Movies:/downloads
+      - /share/MoviesWatchDir:/watchdir
     environment:
       - TR_RPC_AUTHENTICATION_REQUIRED=true
       - TR_DOWNLOAD_DIR=/downloads
       - TR_RPC_ENABLED=true
       - TR_PEER_PORT=51411
+      - TR_WATCH_DIR=/watchdir
+      - TR_WATCH_DIR_ENABLED=true
       - TRUSER=${TRANSMISSION_USERNAME}
       - TRPASSWD=${TRANSMISSION_PASSWORD}
       - USERID=${UID}
@@ -94,11 +97,14 @@ services:
       - 9092
     volumes:
       - /share/TV:/downloads
+      - /share/TVWatchDir:/watchdir
     environment:
       - TR_RPC_AUTHENTICATION_REQUIRED=true
       - TR_DOWNLOAD_DIR=/downloads
       - TR_RPC_ENABLED=true
       - TR_PEER_PORT=51412
+      - TR_WATCH_DIR=/watchdir
+      - TR_WATCH_DIR_ENABLED=true
       - TRUSER=${TRANSMISSION_USERNAME}
       - TRPASSWD=${TRANSMISSION_PASSWORD}
       - USERID=${UID}
@@ -117,6 +123,7 @@ services:
       - 9093
     volumes:
       - /share/Data:/downloads:shared
+      - /share/DataWatchDir:/watchdir:shared
     devices:
       - /dev/fuse
     depends_on:
@@ -126,6 +133,8 @@ services:
       - TR_DOWNLOAD_DIR=/downloads
       - TR_RPC_ENABLED=true
       - TR_PEER_PORT=51413
+      - TR_WATCH_DIR=/watchdir
+      - TR_WATCH_DIR_ENABLED=true
       - TR_INCOMPLETE_DIR_ENABLED=true
       - TR_INCOMPLETE_DIR=/downloads/_incomplete
       - TRUSER=${TRANSMISSION_USERNAME}
@@ -167,6 +176,7 @@ services:
       - TZ=${TZ}
       - /share/Multimedia/Configurations/CouchPotato:/config
       - /share/Movies:/downloads
+      - /share/MoviesWatchDir:/watchdir
     expose:
       - 5050
     ports:
@@ -189,6 +199,7 @@ services:
       - /etc/localtime:/etc/localtime:ro
       - /share/Multimedia/Configurations/Sonarr:/config
       - /share/TV:/downloads
+      - /share/TVWatchDir:/watchdir
 
   dl-serve:
     image: kyma/docker-nginx
