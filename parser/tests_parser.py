@@ -1,5 +1,4 @@
 import json
-import unittest
 
 from app import create_app
 
@@ -15,12 +14,11 @@ data = (
                                                                     'title': 'Game of Thrones'}),
 )
 
-@pytest.
 def setUp(self):
     self.app = create_app().test_client()
 
 def test_parse(app):
-    rv = self.app.get('/', data=data[0][0])
-    self.assertEquals(200, rv.status_code)
+    rv = app.get('/', data=data[0][0])
+    assert rv.status_code == 200
     result = json.loads(rv.data)
-    self.assertEquals(data[0][1], result)
+    assert result == data[0][1]

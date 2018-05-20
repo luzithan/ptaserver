@@ -38,8 +38,8 @@ services:
     environment:
       - VIRTUAL_HOST=plex.${DOMAIN}
       - VIRTUAL_PORT=32400
-      - PLEX_UID=0
-      - PLEX_GID=0
+      - PLEX_UID=${UID}
+      - PLEX_GID=${GID}
     volumes:
       - /share/Multimedia/Configurations/Plex:/config
       - /tmp:/transcode
@@ -77,8 +77,8 @@ services:
       - TR_PEER_PORT=51411
       - TRUSER=${TRANSMISSION_USERNAME}
       - TRPASSWD=${TRANSMISSION_PASSWORD}
-      - USERID=0
-      - GROUPID=0
+      - USERID=${UID}
+      - GROUPID=${GID}
       - VIRTUAL_HOST=transmission-movies.${DOMAIN}
       - VIRTUAL_PORT=9091
     ports:
@@ -86,6 +86,7 @@ services:
       - "51411:51411"
     expose:
       - "9091"
+
   transmission-tv:
     image: dperson/transmission
     expose:
@@ -99,8 +100,8 @@ services:
       - TR_PEER_PORT=51412
       - TRUSER=${TRANSMISSION_USERNAME}
       - TRPASSWD=${TRANSMISSION_PASSWORD}
-      - USERID=0
-      - GROUPID=0
+      - USERID=${UID}
+      - GROUPID=${GID}
       - VIRTUAL_HOST=transmission-tv.${DOMAIN}
       - VIRTUAL_PORT=9092
     ports:
@@ -108,6 +109,7 @@ services:
       - "51412:51412"
     expose:
       - "9092"
+
   transmission-data:
     image: dperson/transmission
     expose:
@@ -127,8 +129,8 @@ services:
       - TR_INCOMPLETE_DIR=/downloads/_incomplete
       - TRUSER=${TRANSMISSION_USERNAME}
       - TRPASSWD=${TRANSMISSION_PASSWORD}
-      - USERID=0
-      - GROUPID=0
+      - USERID=${UID}
+      - GROUPID=${GID}
       - VIRTUAL_HOST=transmission-data.${DOMAIN}
       - VIRTUAL_PORT=9091
     ports:
@@ -138,6 +140,7 @@ services:
       - "9093"
     depends_on:
       - rc-mount
+
   parser:
     build: parser
     hostname: parser
@@ -147,11 +150,15 @@ services:
       - "8081:8081"
     expose:
       - "8081"
+
   jackett:
     image: linuxserver/jackett
     environment:
-      - PUID=0
-      - PGID=0
+      - PUID=${UID}
+      - PGID=${GID}
+      - TZ=${TZ}
+      - VIRTUAL_HOST=sonarr.${DOMAIN}
+      - VIRTUAL_PORT=8989
     volumes:
       - /etc/localtime:/etc/localtime:ro
       - /share/Multimedia/Configurations/Jackett:/config
@@ -159,6 +166,26 @@ services:
       - "9117"
     ports:
       - "9117:9117"
+
+  sonarr:
+    image: linuxserver/sonarr
+    hostname: sonarr
+    environment:
+      - PUID=${UID}
+      - PGID=${GID}
+      - TZ=${TZ}
+      - VIRTUAL_HOST=sonarr.${DOMAIN}
+      - VIRTUAL_PORT=8989
+    ports:
+      - "8989:8989"
+    expose:
+      - 8989
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - /share/Multimedia/Configurations/Sonarr:/config
+      - /share/TV:/tv
+      - /share/TVDownloads:/downloads
+
   dl-serve:
     image: kyma/docker-nginx
     environment:
@@ -204,5 +231,5 @@ services:
       - RCLONE_CONFIG_REMOTE_KEY=${B2_KEY}
       - MOUNT_UID=1000
       - MOUNT_GID=1000
-      - PUID=0
-      - PGID=0
+      - PUID=${UID}
+      - PGID=${GID}
