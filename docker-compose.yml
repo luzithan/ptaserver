@@ -51,8 +51,8 @@ services:
     environment:
       - VIRTUAL_HOST=plex.${DOMAIN}
       - VIRTUAL_PORT=32400
-      - PLEX_UID=${UID}
-      - PLEX_GID=${GID}
+      - PLEX_UID=${PUID}
+      - PLEX_GID=${PGID}
     volumes:
       - /share/Multimedia/Configurations/Plex:/config
       - /tmp:/transcode
@@ -102,8 +102,8 @@ services:
       - TR_WATCH_DIR_ENABLED=true
       - TRUSER=${USERNAME}
       - TRPASSWD=${PASSWORD}
-      - USERID=${UID}
-      - GROUPID=${GID}
+      - USERID=${PUID}
+      - GROUPID=${PGID}
       - VIRTUAL_HOST=transmission-movies.${DOMAIN}
       - VIRTUAL_PORT=9091
     ports:
@@ -128,8 +128,8 @@ services:
       - TR_WATCH_DIR_ENABLED=true
       - TRUSER=${USERNAME}
       - TRPASSWD=${PASSWORD}
-      - USERID=${UID}
-      - GROUPID=${GID}
+      - USERID=${PUID}
+      - GROUPID=${PGID}
       - VIRTUAL_HOST=transmission-tv.${DOMAIN}
       - VIRTUAL_PORT=9092
     ports:
@@ -160,8 +160,8 @@ services:
       - TR_INCOMPLETE_DIR=/downloads/_incomplete
       - TRUSER=${USERNAME}
       - TRPASSWD=${PASSWORD}
-      - USERID=${UID}
-      - GROUPID=${GID}
+      - USERID=${PUID}
+      - GROUPID=${PGID}
       - VIRTUAL_HOST=transmission-data.${DOMAIN}
       - VIRTUAL_PORT=9091
     ports:
@@ -175,8 +175,8 @@ services:
   jackett:
     image: linuxserver/jackett
     environment:
-      - PUID=${UID}
-      - PGID=${GID}
+      - PUID=${PUID}
+      - PGID=${PGID}
       - TZ=${TZ}
       - VIRTUAL_HOST=sonarr.${DOMAIN}
       - VIRTUAL_PORT=8989
@@ -191,8 +191,8 @@ services:
     image: linuxserver/couchpotato
     hostname: couchpotato
     environment:
-      - PUID=${UID}
-      - PGID=${GID}
+      - PUID=${PUID}
+      - PGID=${PGID}
       - TZ=${TZ}
       - /share/Multimedia/Configurations/CouchPotato:/config
       - /share/Movies:/downloads
@@ -208,8 +208,8 @@ services:
     image: linuxserver/sonarr
     hostname: sonarr
     environment:
-      - PUID=${UID}
-      - PGID=${GID}
+      - PUID=${PUID}
+      - PGID=${PGID}
       - TZ=${TZ}
       - VIRTUAL_HOST=sonarr.${DOMAIN}
       - VIRTUAL_PORT=8989
@@ -226,8 +226,8 @@ services:
     image: linuxserver/radarr
     hostname: radarr
     environment:
-      - PUID=${UID}
-      - PGID=${GID}
+      - PUID=${PUID}
+      - PGID=${PGID}
       - TZ=${TZ}
       - VIRTUAL_HOST=radarr.${DOMAIN}
       - VIRTUAL_PORT=7878
@@ -285,5 +285,5 @@ services:
       - RCLONE_CONFIG_REMOTE_KEY=${B2_KEY}
       - MOUNT_UID=1000
       - MOUNT_GID=1000
-      - PUID=${UID}
-      - PGID=${GID}
+      - PUID=${PUID}
+      - PGID=${PGID}
