@@ -9,6 +9,16 @@ services:
     volumes:
       - /share/Multimedia/Configurations/Plex:/config
 
+  plex-setup:
+    build: plex-setup
+    image: luzithan/plex-setup
+    env_file:
+      - /share/Multimedia/Configurations/Plex/plex.env
+    environment:
+      - PLEX_SERVER_HOSTNAME=plex
+    depends_on:
+      - plex
+
   nginx-proxy:
     image: jwilder/nginx-proxy
     ports:
