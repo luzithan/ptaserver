@@ -79,8 +79,8 @@ services:
       - TR_PEER_PORT=51411
       - TR_WATCH_DIR=/watchdir
       - TR_WATCH_DIR_ENABLED=true
-      - TRUSER=${TRANSMISSION_USERNAME}
-      - TRPASSWD=${TRANSMISSION_PASSWORD}
+      - TRUSER=${USERNAME}
+      - TRPASSWD=${PASSWORD}
       - USERID=${UID}
       - GROUPID=${GID}
       - VIRTUAL_HOST=transmission-movies.${DOMAIN}
@@ -200,6 +200,24 @@ services:
     volumes:
       - /etc/localtime:/etc/localtime:ro
       - /share/Multimedia/Configurations/Sonarr:/config
+      - /share/TV:/downloads
+      - /share/TVWatchDir:/watchdir
+
+  radarr:
+    image: linuxserver/radarr
+    hostname: radarr
+    environment:
+      - PUID=${UID}
+      - PGID=${GID}
+      - TZ=${TZ}
+      - VIRTUAL_HOST=radarr.${DOMAIN}
+      - VIRTUAL_PORT=7878
+    ports:
+      - "7878:7878"
+    expose:
+      - 7878
+    volumes:
+      - /share/Multimedia/Configurations/Radarr:/config
       - /share/TV:/downloads
       - /share/TVWatchDir:/watchdir
 
