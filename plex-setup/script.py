@@ -4,23 +4,26 @@ from plexapi.server import PlexServer
 from attrdict import AttrDict
 
 
-plex_server = 'http://' + os.environ.get('PLEX_SERVER', 'plex') + ':32400'
+plex_server = 'http://' + os.environ['PLEX_SERVER'] + ':32400'
+plex_auth = os.environ['PLEX_AUTH']
 
 print('plex_server ' + plex_server)
+print('plex auth' + plex_auth)
 
-plex = PlexServer(plex_server, os.environ.get('PLEX_AUTH'))
+
+plex = PlexServer(plex_server, plex_auth)
 
 movie_section = AttrDict(scanner="Plex Movie Scanner", language="en", type="movie", agent="com.plexapp.agents.imdb",
                          location="/movies", name="Movies")
 
-music_section = AttrDict(scanner="Plex Music Scanner", language="en", type="artist", agent="com.plexapp.agents.lastfm",
-                         location="/music", name="Music")
+movies_data_section = AttrDict(scanner="Plex Movie Scanner", language="en", type="movie", agent="com.plexapp.agents.imdb",
+                         location="/data/movies", name="Data Movies")
 
 tv_section = AttrDict(scanner="Plex Series Scanner", language="en", type="show", agent="com.plexapp.agents.thetvdb",
                       location="/tv", name="TV Shows")
 
-photo_section = AttrDict(scanner="Plex Photo Scanner", language="en", type="photo", agent="com.plexapp.agents.none",
-                         location="/photos", name="Photos")
+tv_data_section = AttrDict(scanner="Plex Movie Scanner", language="en", type="movie", agent="com.plexapp.agents.imdb",
+                         location="/data/tv", name="Data TV Shows")
 
 sections_to_add = [movie_section, tv_section]
 
