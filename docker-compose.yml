@@ -14,8 +14,6 @@ services:
     image: luzithan/plex-setup
     env_file:
       - /share/Multimedia/Configurations/Plex/plex.env
-    environment:
-      - PLEX_SERVER_HOSTNAME=plex
     depends_on:
       - plex
 

@@ -1,12 +1,14 @@
 import os
-import logging
 
 from plexapi.server import PlexServer
 from attrdict import AttrDict
 
-logging.basicConfig()
 
-plex = PlexServer(os.environ.get('PLEX_SERVER_HOSTNAME'), os.environ.get('PLEX_AUTH'))
+plex_server = 'http://' + os.environ.get('PLEX_SERVER', 'plex') + ':32400'
+
+print('plex_server ' + plex_server)
+
+plex = PlexServer(plex_server, os.environ.get('PLEX_AUTH'))
 
 movie_section = AttrDict(scanner="Plex Movie Scanner", language="en", type="movie", agent="com.plexapp.agents.imdb",
                          location="/movies", name="Movies")
@@ -30,7 +32,7 @@ for section_to_add in sections_to_add:
         if all(k in second and second[k] == v for k, v in section_to_add.items()):
             # found the same section
             found = True
-            logging.info('Found section already added %s' % section_to_add)
+            print('Found section already added %s' % section_to_add)
     if not found:
-        logging.info('Add section %s' % section_to_add)
+        print('Add section %s' % section_to_add)
         plex.library.add(**section_to_add)

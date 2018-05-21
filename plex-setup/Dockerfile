@@ -1,9 +1,9 @@
 FROM python:3.6
 
-COPY . /app
-
 WORKDIR /app
-
+COPY requirements.txt /app
 RUN pip install -r requirements.txt
 
-CMD ['python','./script.py']
+COPY . /app
+
+CMD ["python", "./script.py"]
