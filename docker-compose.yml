@@ -21,6 +21,8 @@ services:
 
   nginx-proxy:
     image: jwilder/nginx-proxy
+    expose:
+      - 80
     ports:
       - "80:80"
     volumes:
@@ -115,8 +117,8 @@ services:
       - TR_PEER_PORT=51412
       - TR_WATCH_DIR=/watchdir
       - TR_WATCH_DIR_ENABLED=true
-      - TRUSER=${TRANSMISSION_USERNAME}
-      - TRPASSWD=${TRANSMISSION_PASSWORD}
+      - TRUSER=${USERNAME}
+      - TRPASSWD=${PASSWORD}
       - USERID=${UID}
       - GROUPID=${GID}
       - VIRTUAL_HOST=transmission-tv.${DOMAIN}
@@ -147,8 +149,8 @@ services:
       - TR_WATCH_DIR_ENABLED=true
       - TR_INCOMPLETE_DIR_ENABLED=true
       - TR_INCOMPLETE_DIR=/downloads/_incomplete
-      - TRUSER=${TRANSMISSION_USERNAME}
-      - TRPASSWD=${TRANSMISSION_PASSWORD}
+      - TRUSER=${USERNAME}
+      - TRPASSWD=${PASSWORD}
       - USERID=${UID}
       - GROUPID=${GID}
       - VIRTUAL_HOST=transmission-data.${DOMAIN}
@@ -170,7 +172,6 @@ services:
       - VIRTUAL_HOST=sonarr.${DOMAIN}
       - VIRTUAL_PORT=8989
     volumes:
-      - /etc/localtime:/etc/localtime:ro
       - /share/Multimedia/Configurations/Jackett:/config
     expose:
       - "9117"
@@ -208,7 +209,6 @@ services:
     expose:
       - 8989
     volumes:
-      - /etc/localtime:/etc/localtime:ro
       - /share/Multimedia/Configurations/Sonarr:/config
       - /share/TV:/downloads
       - /share/TVWatchDir:/watchdir
