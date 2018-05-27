@@ -1,20 +1,27 @@
+#!/usr/bin/env python
 import os
-from urllib import quote_plus, urlencode
+import time
+from urllib import quote_plus
 
 from plexapi.server import PlexServer
 import yaml
+from requests.exceptions import ConnectionError
+
+plex_server = 'http://' + os.environ.get('PLEX_SERVER', 'localhost') + ':32400'
+plex_auth = open('/.plex.auth', 'r').read()
+
+print('plex_server: ' + plex_server)
+print('plex auth: ' + plex_auth)
 
 
-plex_server = 'http://' + os.environ['PLEX_SERVER'] + ':32400'
-plex_auth = os.environ['PLEX_AUTH']
+while True:
+    try:
+        plex = PlexServer(plex_server, plex_auth)
+        break
+    except ConnectionError:
+        time.sleep(1)
 
-print('plex_server ' + plex_server)
-print('plex auth' + plex_auth)
-
-
-plex = PlexServer(plex_server, plex_auth)
-
-sections_to_add = yaml.load(open('plex.conf.yml', 'r'))
+sections_to_add = yaml.load(open('/etc/plex-setup/plex.conf.yml', 'r'))
 print(sections_to_add)
 
 

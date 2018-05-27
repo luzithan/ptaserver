@@ -1,24 +1,6 @@
 version: '3'
 
 services:
-  build-plex:
-    build: build-plex
-    image: luzithan/build-plex
-    env_file:
-    - .env
-    volumes:
-      - /share/Multimedia/Configurations/Plex:/config
-
-  plex-setup:
-    build: plex-setup
-    image: luzithan/plex-setup
-    env_file:
-      - /share/Multimedia/Configurations/Plex/plex.env
-    environment:
-      - PLEX_SERVER=plex
-    depends_on:
-      - plex
-
   nginx-proxy:
     image: jwilder/nginx-proxy
     expose:
@@ -29,8 +11,7 @@ services:
       - /var/run/docker.sock:/tmp/docker.sock:ro
 
   plex:
-    container_name: plex
-    image: plexinc/pms-docker:latest
+    build: built-plex
     restart: unless-stopped
     expose:
       - "32400"
@@ -47,7 +28,7 @@ services:
       - "32414:32414/udp"
     hostname: plex_server
     env_file:
-      - /share/Multimedia/Configurations/Plex/plex.env
+      - .env
     environment:
       - VIRTUAL_HOST=plex.${DOMAIN}
       - VIRTUAL_PORT=32400
@@ -60,7 +41,6 @@ services:
       - /share/TV:/tv
       - /share/Data:/data:shared
     depends_on:
-      - build-plex
       - rc-mount
 #  tribler:
 #    build: tribler

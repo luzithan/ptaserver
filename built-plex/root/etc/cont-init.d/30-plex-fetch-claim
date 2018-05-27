@@ -1,0 +1,77 @@
+#!/usr/bin/with-contenv python
+import os
+
+import requests
+
+from tzlocal import get_localzone
+from datetime import datetime
+
+URL_LOGIN = 'https://plex.tv/users/sign_in.json'
+URL_CLAIM_TOKEN = 'https://plex.tv/api/claim/token.json'
+PlexClientIdentifier = '4a745ae7-1839-e44e-1e42-aebfa578c865'
+user = os.environ.get('PLEX_USERNAME', None)
+password = os.environ.get('PLEX_PASSWORD', None)
+print(os.environ)
+
+def getHeaders():
+    return {
+        'X-Plex-Client-Identifier': PlexClientIdentifier,
+        'X-Plex-Product': 'Plex SSO',
+    }
+
+
+def getAuthToken(user, password):
+    headers = getHeaders()
+
+    data = 'user[login]=%s&user[password]=%s&user[remember_me]=1' % (user, password)
+
+    response = requests.post(URL_LOGIN, headers=headers, data=data)
+    data = response.json()
+
+    return data['user']['authentication_token']
+
+
+def getClaimToken(authToken=None):
+    headers = getHeaders()
+    headers['X-Plex-Token'] = authToken
+
+    response = requests.get(URL_CLAIM_TOKEN, headers=headers)
+    data = response.json()
+
+    return data['token']
+
+
+if user is None:
+    print('Error we need a PLEX_USERNAME environement variable')
+    exit(-1)
+if password is None:
+    print('Error we need a PLEX_PASSWORD environement variable')
+    exit(-1)
+
+auth_token = getAuthToken(user,password)
+claim_token = getClaimToken(auth_token)
+
+os.environ['PLEX_CLAIM'] = claim_token
+os.environ['PLEX_AUTH'] = auth_token
+
+
+try:
+    local_tz = get_localzone()
+    local_datetime = datetime.now(local_tz)
+except:
+    local_tz = 'Europe/Paris'
+
+ip = requests.get('http://ipecho.net/plain').text
+
+advertise_ip='http://%s:32400/'%ip
+
+os.environ['advertise_ip'] = ip
+
+print('claim_token %s' % claim_token)
+print('auth_token %s' % auth_token)
+print('ip %s' % ip)
+print('tz %s' % local_tz)
+
+open('/.plex.auth', 'w').write(auth_token)
+open('/.build-plex-first-run-complete', 'w').close()
+print("Plex Media Server first run build setup complete")
