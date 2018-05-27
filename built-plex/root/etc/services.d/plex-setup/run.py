@@ -21,7 +21,7 @@ while True:
     except ConnectionError:
         time.sleep(1)
 
-sections_to_add = yaml.load(open('/etc/plex-setup/plex.conf.yml', 'r'))
+sections_to_add = yaml.load(open('/plex.conf.yml', 'r'))
 print(sections_to_add)
 
 

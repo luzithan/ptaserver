@@ -15,6 +15,7 @@ RUN apt-get update \
     && apt-get clean
 
 COPY requirements.txt .
+COPY plex.conf.yml .
 
 RUN pip install -r requirements.txt
 

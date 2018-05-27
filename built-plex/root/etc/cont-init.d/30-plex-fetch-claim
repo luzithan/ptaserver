@@ -11,7 +11,7 @@ URL_CLAIM_TOKEN = 'https://plex.tv/api/claim/token.json'
 PlexClientIdentifier = '4a745ae7-1839-e44e-1e42-aebfa578c865'
 user = os.environ.get('PLEX_USERNAME', None)
 password = os.environ.get('PLEX_PASSWORD', None)
-print(os.environ)
+
 
 def getHeaders():
     return {
