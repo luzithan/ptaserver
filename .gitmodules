@@ -1,0 +1,3 @@
+[submodule "configurable-plex"]
+	path = configurable-plex
+	url = https://github.com/rienafairefr/configurable-plex.git

@@ -29,8 +29,7 @@ services:
       - /var/run/docker.sock:/tmp/docker.sock:ro
 
   plex:
-    container_name: plex
-    image: plexinc/pms-docker:latest
+    build: configurable-plex
     restart: unless-stopped
     expose:
       - "32400"
