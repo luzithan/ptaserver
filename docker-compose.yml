@@ -1,28 +1,10 @@
 version: '3'
 
 services:
-  build-plex:
-    build: build-plex
-    image: luzithan/build-plex
-    env_file:
-    - .env
-    volumes:
-      - /share/Multimedia/Configurations/Plex:/config
-
-  plex-setup:
-    build: plex-setup
-    image: luzithan/plex-setup
-    env_file:
-      - /share/Multimedia/Configurations/Plex/plex.env
-    environment:
-      - PLEX_SERVER=plex
-    depends_on:
-      - plex
 
   nginx-proxy:
     image: jwilder/nginx-proxy
-    expose:
-      - 80
+    container_name: nginx-proxy
     ports:
       - "80:80"
     volumes:
@@ -32,7 +14,7 @@ services:
     build: configurable-plex
     restart: unless-stopped
     expose:
-      - "32400"
+      - 32400
     ports:
       - "32400:32400/tcp"
       - "3005:3005/tcp"
@@ -52,6 +34,8 @@ services:
       - VIRTUAL_PORT=32400
       - PLEX_UID=${PUID}
       - PLEX_GID=${PGID}
+      - PLEX_USERNAME=${PLEX_USERNAME}
+      - PLEX_PASSWORD=${PLEX_PASSWORD}
     volumes:
       - /share/Multimedia/Configurations/Plex:/config
       - /tmp:/transcode
@@ -59,31 +43,7 @@ services:
       - /share/TV:/tv
       - /share/Data:/data:shared
     depends_on:
-      - build-plex
       - rc-mount
-#  tribler:
-#    build: tribler
-#    expose:
-#      - 8085
-#    volumes:
-#      - /share/Downloads:/home/tribler/TriblerDownloads
-#    environment:
-#      - CORE_PROCESS=1
-#      - CORE_API_PORT=8085
-#     - CORE_BASE_PATH=/home/tribler/tribler
-#     - VIRTUAL_HOST=tribler.${DOMAIN}
-#     - VIRTUAL_PORT=8085
-#   ports:
-#     - "8085:8085"
-#   network_mode: "host"
-
-  cloud-torrent:
-    image: jpillora/cloud-torrent
-    expose:
-      - "3000"
-    ports:
-      - "3000:3000"
-    command: --port 3000 --auth ${USERNAME}:${PASSWORD}
 
   transmission-movies:
     image: dperson/transmission
@@ -254,16 +214,6 @@ services:
       - rc-mount
     ports:
       - "8082:80"
-
-  emby:
-    image: emby/embyserver
-    volumes:
-      - /share/Multimedia/Configurations/Emby:/config
-      - /share/TV:/mnt/shareTV
-      - /share/Movies:/mnt/shareMovies
-    ports:
-      - "8920:8920"
-      - "8096:8096"
 
   rc-mount:
     image: tynor88/rclone-mount:dev
